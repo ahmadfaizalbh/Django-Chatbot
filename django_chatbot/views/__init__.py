@@ -2,8 +2,8 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .chatbot import chat
-from .models import Conversation
+from ..chatbot import chat
+from ..models import Conversation
 from django.conf import settings
 
 
@@ -29,7 +29,7 @@ def web_hook(request):
             result = chat.respond(message, session_id=sender_id)
             chat.conversation[sender_id].append_bot(result)
             del chat.attr[sender_id]
-    msgs = Conversation.objects.filter(sender__messengerSenderID=sender_id)
+    msgs = Conversation.objects.filter(sender__sender_id=sender_id)
     if last_message_id:
         msgs = msgs.filter(id__gt=last_message_id)
     count = msgs.count()
