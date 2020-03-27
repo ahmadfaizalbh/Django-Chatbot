@@ -4,7 +4,7 @@ from django.db import models
 
 
 class Sender(models.Model):
-    messengerSenderID = models.TextField()
+    sender_id = models.TextField()
     topic = models.TextField()
 
 
