@@ -2,10 +2,10 @@
 Django ChatBot AI
 ==================
 
-A Django wrapper with webhook for  `ChatbotAI<https://pypi.org/project/chatbotAI/>`
+A Django wrapper with webhook for  `ChatbotAI <https://pypi.org/project/chatbotAI/>`_
 
 
-`Example code<https://github.com/ahmadfaizalbh/WebBot>`
+`Example code <https://github.com/ahmadfaizalbh/WebBot>`_
 
 
 
