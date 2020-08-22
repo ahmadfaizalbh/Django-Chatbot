@@ -12,8 +12,12 @@ setup(
     long_description=open('README.rst').read(),
     license='MIT',
     keywords='django chatbot ai webhook and django wrapper for ChatBotAI',
-    packages=['django.chatbot', 'django.chatbot.migrations'],
-    package_dir={'django.chatbot': 'django_chatbot', 'django.chatbot.migrations': 'django_chatbot/migrations'},
+    packages=['django.chatbot', 'django.chatbot.migrations', 'django.chatbot.views'],
+    package_dir={
+        'django.chatbot': 'django_chatbot',
+        'django.chatbot.migrations': 'django_chatbot/migrations',
+        'django.chatbot.views': 'django_chatbot/views'
+    },
     include_package_data=True,
     package_data={},
     zip_safe=True,
