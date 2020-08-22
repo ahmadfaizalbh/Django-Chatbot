@@ -31,6 +31,7 @@ in settings.py add the following::
   START_MESSAGE = "Welcome to ChatBotAI"
 
 
+
 in urls.py add the following::
 
   from django.chatbot.views import web_hook
@@ -42,9 +43,30 @@ in urls.py add the following::
     ...
  ]
 
+For Microsoft Bot Framework Webhook
+-----------------------------------
+
+in addition to the above in settings.py add
+::
+
+   APP_CLIENT_ID = "<Microsoft App ID>"
+   APP_CLIENT_SECRET = "<Microsoft App Secret>"
+
+
+in urls.py add the following::
+
+  from django.chatbot.views import botframework
+
+  urlpatterns = [
+    ...
+    path("botframework-webhook/",
+         botframework.web_hook,
+         name="botframework-webhook"),
+    ...
+ ]
 
 Web Hook API (should authenticate before API request)
-============
+=====================================================
 ::
 
   URL: /webhook/
