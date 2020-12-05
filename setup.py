@@ -32,6 +32,6 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     install_requires=[
-              'chatbotAI==0.2.2.1'
+              'chatbotAI<=0.2.2.1'
     ]
 )
