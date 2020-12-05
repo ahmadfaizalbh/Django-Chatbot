@@ -49,15 +49,21 @@ class UserConversation:
     def get_sender(self):
         return Sender.objects.get(sender_id=self.sender_id)
 
-    def get_conversation(self, index):
+    def get_conversation(self, index, **kwargs):
         try:
-            conversations = Conversation.objects.filter(sender__sender_id=self.sender_id)
+            conversations = Conversation.objects.filter(sender__sender_id=self.sender_id, **kwargs)
             if index < 0:
                 index = -index - 1
                 conversations = conversations.order_by('-id')
             return conversations[index]
         except:
             raise IndexError("list index out of range")
+
+    def get_bot_message(self, index):
+        return self.get_conversation(index, bot=True).message
+
+    def get_user_message(self, index):
+        return self.get_conversation(index, bot=False).message
 
     def __getitem__(self, index):
         return self.get_conversation(index).message
@@ -74,12 +80,11 @@ class UserConversation:
     def append(self, message):
         Conversation.objects.create(sender=self.get_sender(), message=message)
     
-    def append_bot(self, message):
-        Conversation.objects.create(sender=self.get_sender(),message=message,bot=True)
+    def append_bot_message(self, message):
+        Conversation.objects.create(sender=self.get_sender(), message=message, bot=True)
     
-    def append_user(self, message):
-        Conversation.objects.create(sender=self.get_sender(), message=message,
-                                    bot=False)
+    def append_user_message(self, message):
+        Conversation.objects.create(sender=self.get_sender(), message=message, bot=False)
 
     def __delitem__(self, index):
         self.get_conversation(index).delete()
@@ -96,7 +101,6 @@ class UserConversation:
     def __contains__(self, message):
         return Conversation.objects.filter(sender__sender_id=self.sender_id,
                                            message=message)
-
 
 class UserTopic:
 
@@ -167,27 +171,43 @@ class MyChat(Chat):
     def __init__(self, *arg, **kwargs):
         super(MyChat, self).__init__(*arg, **kwargs)
         self._memory = UserSession(UserMemory, self._memory)
-        self.conversation = UserSession(UserConversation, self.conversation)
-        self.topic.topic = UserTopic(self.topic.topic)
+        self._conversation = UserSession(UserConversation, self._conversation)
+        self._topic.topic = UserTopic(self._topic.topic)
+
+    @property
+    def conversation(self):
+        return self._conversation
+
+    @property
+    def memory(self):
+        return self._memory
+
+    @property
+    def topic(self):
+        return self._topic
+
+    @property
+    def attr(self):
+        return self._attr
 
     def respond(self, message, session_id):
-        self.attr[session_id] = {
+        self._attr[session_id] = {
             'match': None,
             'pmatch': None,
             '_quote': False,
             'substitute': True
         }
-        self.conversation[session_id].append_user(message)
+        self._conversation[session_id].append_user_message(message)
         response = super().respond(message.rstrip(".! \n\t"),
                                    session_id=session_id)
-        self.conversation[session_id].append_bot(response)
-        del self.attr[session_id]
+        self._conversation[session_id].append_bot_message(response)
+        del self._attr[session_id]
         return response
-    
+
     def start_new_session(self, session_id, topic=""):
         super().start_new_session(session_id)
         start_message = getattr(settings, "START_MESSAGE", "Welcome to ChatBotAI")
-        self.conversation[session_id].append_bot(start_message)
+        self._conversation[session_id].append_bot_message(start_message)
         return start_message
 
 
