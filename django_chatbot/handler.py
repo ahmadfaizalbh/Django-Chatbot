@@ -39,6 +39,11 @@ class UserMemory:
     def __contains__(self, key):
         return Memory.objects.filter(sender__sender_id=self.sender_id, key=key)
 
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
 
 class UserConversation:
 
@@ -135,6 +140,11 @@ class UserTopic:
     def __contains__(self, sender_id):
         return Sender.objects.filter(sender_id=sender_id).count() > 0
 
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
 
 class UserSession:
 
@@ -144,9 +154,9 @@ class UserSession:
 
     def __getitem__(self, sender_id):
         try:
-
             return self.objClass(Sender.objects.get(sender_id=sender_id).sender_id)
-        except:raise KeyError(sender_id)
+        except:
+            raise KeyError(sender_id)
 
     def __setitem__(self, sender_id, val):
         Sender.objects.get_or_create(sender_id=sender_id)
@@ -165,6 +175,11 @@ class UserSession:
     def __contains__(self, sender_id):
         return Sender.objects.filter(sender_id=sender_id).count() > 0
 
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
 
 class MyChat(Chat):
 
